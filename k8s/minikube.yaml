@@ -17,20 +17,20 @@ spec:
     spec:
       containers:
       - name: mysql
-        image: docker.io/gaf3/pi-k8s-fitches-mysql:0.1-x86_64
+        image: docker.io/mysql:5.7
         ports:
         - containerPort: 3306
         env:
           - name: MYSQL_ALLOW_EMPTY_PASSWORD
-            value: yes
-    volumeMounts:
-    - mountPath: /var/lib/mysql
-      name: data
-  volumes:
-  - name: data
-    hostPath:
-      path: /var/lib/pi-k8s/mysql
-      type: DirectoryOrCreate
+            value: "yes"
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: data
+      volumes:
+      - name: data
+        hostPath:
+          path: /var/lib/pi-k8s/mysql
+          type: DirectoryOrCreate
 ---
 kind: Service
 apiVersion: v1

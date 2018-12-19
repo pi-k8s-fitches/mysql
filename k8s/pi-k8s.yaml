@@ -15,22 +15,24 @@ spec:
       labels:
         app: mysql
     spec:
+      nodeSelector:
+        storage: enabled
       containers:
       - name: mysql
-        image: docker.io/gaf3/pi-k8s-fitches-mysql:0.1-armv7l
+        image: docker.io/hypriot/rpi-mysql
         ports:
         - containerPort: 3306
         env:
           - name: MYSQL_ALLOW_EMPTY_PASSWORD
-            value: yes
-    volumeMounts:
-    - mountPath: /var/lib/mysql
-      name: data
-  volumes:
-  - name: data
-    hostPath:
-      path: /var/lib/pi-k8s/mysql
-      type: DirectoryOrCreate
+            value: "yes"
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: data
+      volumes:
+      - name: data
+        hostPath:
+          path: /var/lib/pi-k8s/mysql
+          type: DirectoryOrCreate
 ---
 kind: Service
 apiVersion: v1
