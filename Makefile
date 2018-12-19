@@ -6,11 +6,12 @@ PORT=3306
 ACCOUNT=gaf3
 NAMESPACE=fitches
 VARIABLES=-e MYSQL_ALLOW_EMPTY_PASSWORD='yes'
+VOLUMES=-v ${PWD}/data:/var/lib/mysql
 
 ifeq ($(MACHINE),armv7l)
-BASE=arm32v7/debian:stretch-slim
+BASE=resin/rpi-raspbian:stretch
 else
-BASE=debian:stretch-slim
+BASE=debian:stretch
 endif
 
 .PHONY: build shell start stop push create update delete create-dev update-dev delete-dev
@@ -18,11 +19,11 @@ endif
 build:
 	docker build . --build-arg BASE=$(BASE) -t $(ACCOUNT)/$(IMAGE):$(TAG)
 
-shell: build
-	docker run -it $(VARIABLES) $(ACCOUNT)/$(IMAGE):$(TAG) sh
+shell:
+	docker run -it $(VARIABLES) $(VOLUMES) $(ACCOUNT)/$(IMAGE):$(TAG) sh
 
 start:
-	docker run --name $(IMAGE)-$(TAG) -d $(VARIABLES) --rm -p 127.0.0.1:$(PORT):$(PORT) -h $(IMAGE) $(ACCOUNT)/$(IMAGE):$(TAG) 
+	docker run --name $(IMAGE)-$(TAG) $(VARIABLES) $(VOLUMES) --rm -p 127.0.0.1:$(PORT):$(PORT) -h $(IMAGE) $(ACCOUNT)/$(IMAGE):$(TAG) 
 
 stop:
 	docker rm -f $(IMAGE)-$(TAG)
