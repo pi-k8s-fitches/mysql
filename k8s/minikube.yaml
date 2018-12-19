@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  namespace: fitches
+  labels:
+    app: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: docker.io/gaf3/pi-k8s-fitches-mysql:0.1-x86_64
+        ports:
+        - containerPort: 3306
+        env:
+          - name: MYSQL_ALLOW_EMPTY_PASSWORD
+            value: yes
+    volumeMounts:
+    - mountPath: /var/lib/mysql
+      name: data
+  volumes:
+  - name: data
+    hostPath:
+      path: /var/lib/pi-k8s/mysql
+      type: DirectoryOrCreate
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: mysql
+  namespace: fitches
+spec:
+  selector:
+    app: mysql
+  ports:
+  - protocol: TCP
+    port: 3306
+    targetPort: 3306
