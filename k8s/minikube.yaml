@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: mysql
-        image: docker.io/mysql:5.7
+        image: docker.io/mysql:5.5
         ports:
         - containerPort: 3306
         env:
